@@ -3,7 +3,12 @@ server:
 spring:
   application:
     name: rest-emulator
+  profiles:
+    active:
   kafka:
     bootstrap-servers: localhost:9092
     topic: "messages"
     consumer-group: "messages-group"
+logging:
+  level:
+    .: INFO
