@@ -5,7 +5,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.rest.model.Person;
-import org.example.rest.service.PersonService;
+import org.example.rest.service.PersonKafkaService;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
@@ -22,12 +22,13 @@ import java.util.HashMap;
 @Slf4j
 @RestController
 @RequiredArgsConstructor
+@RequestMapping("/api/v1/persons")
 public class PersonController {
 
     /**
      * Объект для доступа к методам PersonService
      */
-    private final PersonService personService;
+    private final PersonKafkaService personKafkaService;
 
     /**
      * Объект для доступа к методам ObjectMapper
@@ -41,11 +42,38 @@ public class PersonController {
      * @param person объект персоны
      */
     @ResponseStatus(code = HttpStatus.OK)
-    @PostMapping("/person")
+    @PostMapping
     public void send(@RequestBody Person person) {
+        if (person == null || person.getMother() == null) {
+            throw new IllegalArgumentException("Person or Person.Mother cannot be null");
+        }
         log.info("Вызов метода send() класса PersonController");
-        log.info("На endpoint /person получен объект: {}", person);
-        personService.send(person);
+        log.info("На endpoint \"/api/v1/persons\" получен объект: {}", person);
+        personKafkaService.send(person);
+    }
+
+    /**
+     * Выполняет локальный (уровня контроллера) перехват исключений
+     * IllegalArgumentException - некорректный объект в запросе клиента, в
+     * случае перехвата, выполняет логирование и возвращает клиенту ответ
+     * с комментарием исключения.
+     *
+     * @param e перехваченное исключение
+     * @param response ответ пользователю
+     * @throws IOException проверяемое исключение метода
+     */
+    @ExceptionHandler(value = {IllegalArgumentException.class})
+    public void illegalArgumentException(Exception e, HttpServletResponse response)
+            throws IOException {
+        response.setStatus(HttpStatus.BAD_REQUEST.value());
+        response.setContentType("application/json");
+        response.getWriter().write(objectMapper.writeValueAsString(new HashMap<>() {
+            {
+                put("message", e.getMessage());
+                put("type", e.getClass());
+            }
+        }));
+        log.error(e.getLocalizedMessage());
     }
 
     /**
