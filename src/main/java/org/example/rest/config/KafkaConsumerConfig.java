@@ -14,20 +14,46 @@ import org.springframework.kafka.support.serializer.JsonDeserializer;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Конфигурация для Kafka Consumer
+ *
+ * @author Alexander Emelyanov
+ * @version 1.0
+ */
 @Configuration
 public class KafkaConsumerConfig {
 
+    /**
+     * Адрес сервера Kafka
+     */
     @Value("${spring.kafka.bootstrap-servers}")
     private String bootstrapServers;
 
+    /**
+     * Наименование группы потребителей Kafka
+     */
+    @Value("${spring.kafka.consumer-group}")
+    private String consumerGroups;
+
+    /**
+     * Метод создает бин фабрики потребителей.
+     *
+     * @return возвращает фабрику потребителей параметризованную Person
+     */
     @Bean
     public ConsumerFactory<String, Person> personConsumerFactory() {
         Map<String, Object> props = new HashMap<>();
+        props.put(ConsumerConfig.GROUP_ID_CONFIG, consumerGroups);
         props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
         return new DefaultKafkaConsumerFactory<>(props, new StringDeserializer(),
                 new JsonDeserializer<>(Person.class));
     }
 
+    /**
+     * Метод создает бин фабрики контейнеров слушателя Kafka.
+     *
+     * @return возвращает фабрику контейнеров слушателя Kafka параметризованную Person
+     */
     @Bean
     public ConcurrentKafkaListenerContainerFactory<String, Person> personKafkaListenerContainerFactory() {
         ConcurrentKafkaListenerContainerFactory<String, Person> factory =

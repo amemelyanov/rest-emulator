@@ -4,8 +4,22 @@ import java.util.Arrays;
 import java.util.Random;
 import java.util.Scanner;
 
+/**
+ * Класс содержит методы по поиску минимального элемента на побочной диагонали
+ * матрицы, пользователь через консоль задает размерность матрицы, которая создается
+ * и наполняется случайными целыми числами.
+ *
+ * @author Alexander Emelyanov
+ * @version 1.0
+ */
 public class Exercise1 {
 
+    /**
+     * Метод выполняет запуск приложения, выполняет методы класса и
+     * выводит результат вычислений на консоль.
+     *
+     * @param args аргументы командной строки
+     */
     public static void main(String[] args) {
         int n = getDimension();
         int[][] array = getRandomArray(n);
@@ -15,6 +29,12 @@ public class Exercise1 {
         System.out.printf("Минимальный элемент побочной диагонали равен - %s%n", minElement);
     }
 
+    /**
+     * Метод запрашивает и получает пользовательский
+     * ввод с информацией о размерности массива.
+     *
+     * @return int размерность массива
+     */
     private static int getDimension() {
         int n;
         while (true) {
@@ -29,6 +49,13 @@ public class Exercise1 {
         return n;
     }
 
+    /**
+     * Метод создает массива и наполняет
+     * его случайными числами.
+     *
+     * @param n размерность массива
+     * @return array квадратный массив случайных целых чисел
+     */
     private static int[][] getRandomArray(int n) {
         Random random = new Random();
         int[][] array = new int[n][n];
@@ -40,16 +67,27 @@ public class Exercise1 {
         return array;
     }
 
+    /**
+     * Метод выводит массив на экран.
+     *
+     * @param array массива
+     */
     private static void printArray(int[][] array) {
         for (int[] element : array) {
             System.out.println(Arrays.toString(element));
         }
     }
 
+    /**
+     * Метод находит минимальный элемент на побочной
+     * диагонали массива и возвращает его.
+     *
+     * @return int минимальный элемент побочной диагонали
+     */
     private static int getMinSideDiag(int[][] array) {
         int minElement = Integer.MAX_VALUE;
-        for (int i = array.length - 1, j = 0; i >= 0; i--, j++) {
-            minElement = Math.min(minElement, array[i][j]);
+        for (int i = 0; i < array.length; i++) {
+            minElement = Math.min(minElement, array[array.length - 1 - i][i]);
         }
         return minElement;
     }

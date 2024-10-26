@@ -14,17 +14,36 @@ import org.springframework.kafka.support.serializer.JsonSerializer;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Конфигурация для Kafka Producer
+ *
+ * @author Alexander Emelyanov
+ * @version 1.0
+ */
 @Configuration
 public class KafkaProducerConfig {
 
+    /**
+     * Адрес сервера Kafka
+     */
     @Value("${spring.kafka.bootstrap-servers}")
     private String bootstrapServers;
 
+    /**
+     * Метод создает бин доступа к методам
+     *
+     * @return возвращает объект для доступа к методам Kafka Producer
+     */
     @Bean
     public KafkaTemplate<String, Person> personKafkaTemplate() {
         return new KafkaTemplate<>(personProducerFactory());
     }
 
+    /**
+     * Метод создает бин фабрики производителей.
+     *
+     * @return возвращает фабрику производителей параметризованную Person
+     */
     @Bean
     public ProducerFactory<String, Person> personProducerFactory() {
         Map<String, Object> props = new HashMap<>();

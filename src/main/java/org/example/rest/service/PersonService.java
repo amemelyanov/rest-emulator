@@ -8,30 +8,58 @@ import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 
+/**
+ * Реализация сервиса по работе с персонами с использованием Kafka
+ *
+ * @author Alexander Emelyanov
+ * @version 1.0
+ */
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class PersonService {
 
+    /**
+     * Наименование топика
+     */
     @Value("${spring.kafka.topic}")
     private String topic;
 
+    /**
+     * Объект для доступа к методам KafkaTemplate<String, Person>
+     */
     private final KafkaTemplate<String, Person> kafkaTemplate;
 
+    /**
+     * Метод выполняет отправку объекта Person в топик Kafka
+     *
+     * @param person персона
+     */
     public void send(Person person) {
         log.info("Вызов метода send() класса PersonService");
-        processing(person);
-        kafkaTemplate.send(topic, person);
-        log.info("В Kafka отправлен объект: {}, topic: {}", person, topic);
+        Person changedPerson = processing(person);
+        kafkaTemplate.send(topic, changedPerson);
+        log.info("В Kafka отправлен объект: {}, topic: {}", changedPerson, topic);
     }
 
-    private static void processing(Person person) {
+    /**
+     * Метод выполняет обработку Person
+     *
+     * @param person персона
+     * @return person измененный объект
+     */
+    private Person processing(Person person) {
         person.setAge(96);
         person.getMother().setAge(96);
+        return person;
     }
 
-    @KafkaListener(topics = "${spring.kafka.topic}", groupId = "messages-group",
-            containerFactory = "personKafkaListenerContainerFactory")
+    /**
+     * Метод выполняет получение объекта Person из топика Kafka
+     *
+     * @param person персона
+     */
+    @KafkaListener(topics = "${spring.kafka.topic}", containerFactory = "personKafkaListenerContainerFactory")
     public void receive(Person person) {
         log.info("Вызов метода receive() класса PersonService");
         log.info("Из Kafka получен объект: {}, topic: {}", person, topic);
