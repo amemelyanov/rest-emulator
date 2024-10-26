@@ -2,11 +2,13 @@ package org.example.rest.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.example.rest.model.Person;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
+
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 /**
  * Реализация сервиса по работе с персонами с использованием Kafka
@@ -29,7 +31,7 @@ public class PersonKafkaService implements PersonService {
     /**
      * Объект для доступа к методам KafkaTemplate<String, Person>
      */
-    private final KafkaTemplate<String, Person> kafkaTemplate;
+    private final KafkaTemplate<String, Map<String, Object>> kafkaTemplate;
 
     /**
      * Метод выполняет отправку объекта Person в топик Kafka
@@ -37,11 +39,11 @@ public class PersonKafkaService implements PersonService {
      * @param person персона
      */
     @Override
-    public void send(Person person) {
+    public void send(Map<String, Object> person) {
         log.info("Вызов метода send() класса PersonService");
-        Person changedPerson = processing(person);
-        kafkaTemplate.send(topic, changedPerson);
-        log.info("В Kafka отправлен объект: {}, topic: {}", changedPerson, topic);
+        Map<String, Object> changedJsonObject = processing(person);
+        kafkaTemplate.send(topic, changedJsonObject);
+        log.info("В Kafka отправлен объект: {}, topic: {}", changedJsonObject, topic);
     }
 
     /**
@@ -50,9 +52,9 @@ public class PersonKafkaService implements PersonService {
      * @param person персона
      * @return person измененный объект
      */
-    private Person processing(Person person) {
-        person.setAge(96);
-        person.getMother().setAge(96);
+    private Map<String, Object> processing(Map<String, Object> person) {
+        person.put("age", 96);
+       ((LinkedHashMap<String, Object>) person.get("mother")).put("age", 96);
         return person;
     }
 
@@ -61,9 +63,9 @@ public class PersonKafkaService implements PersonService {
      *
      * @param person персона
      */
-    @KafkaListener(topics = "${spring.kafka.topic}", containerFactory = "personKafkaListenerContainerFactory")
+    @KafkaListener(topics = "${spring.kafka.topic}", containerFactory = "mapKafkaListenerContainerFactory")
     @Override
-    public void receive(Person person) {
+    public void receive(Map<String, Object> person) {
         log.info("Вызов метода receive() класса PersonService");
         log.info("Из Kafka получен объект: {}, topic: {}", person, topic);
     }

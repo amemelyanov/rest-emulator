@@ -4,20 +4,19 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.example.rest.model.Person;
 import org.example.rest.service.PersonKafkaService;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Контроллер для работы с персонами через Rest API
  *
  * @author Alexander Emelyanov
  * @version 1.0
- * @see org.example.rest.model.Person
  */
 @Slf4j
 @RestController
@@ -43,9 +42,9 @@ public class PersonController {
      */
     @ResponseStatus(code = HttpStatus.OK)
     @PostMapping
-    public void send(@RequestBody Person person) {
-        if (person == null || person.getMother() == null) {
-            throw new IllegalArgumentException("Person or Person.Mother cannot be null");
+    public void send(@RequestBody Map<String, Object> person) {
+        if (person == null) {
+            throw new IllegalArgumentException("Person cannot be null");
         }
         log.info("Вызов метода send() класса PersonController");
         log.info("На endpoint \"/api/v1/persons\" получен объект: {}", person);
