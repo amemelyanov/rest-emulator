@@ -2,6 +2,7 @@ package org.example.rest.config;
 
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.common.serialization.StringDeserializer;
+import org.example.rest.model.Person;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -40,12 +41,12 @@ public class KafkaConsumerConfig {
      * @return возвращает фабрику потребителей параметризованную Map
      */
     @Bean
-    public ConsumerFactory<String, Map<String, Object>> mapConsumerFactory() {
+    public ConsumerFactory<String, Person> personConsumerFactory() {
         Map<String, Object> props = new HashMap<>();
         props.put(ConsumerConfig.GROUP_ID_CONFIG, consumerGroups);
         props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
         return new DefaultKafkaConsumerFactory<>(props, new StringDeserializer(),
-                new JsonDeserializer<>(Map.class));
+                new JsonDeserializer<>(Person.class));
     }
 
     /**
@@ -54,10 +55,10 @@ public class KafkaConsumerConfig {
      * @return возвращает фабрику контейнеров слушателя Kafka параметризованную Map
      */
     @Bean
-    public ConcurrentKafkaListenerContainerFactory<String, Map<String, Object>> mapKafkaListenerContainerFactory() {
-        ConcurrentKafkaListenerContainerFactory<String, Map<String, Object>> factory =
+    public ConcurrentKafkaListenerContainerFactory<String, Person> personKafkaListenerContainerFactory() {
+        ConcurrentKafkaListenerContainerFactory<String, Person> factory =
                 new ConcurrentKafkaListenerContainerFactory<>();
-        factory.setConsumerFactory(mapConsumerFactory());
+        factory.setConsumerFactory(personConsumerFactory());
         return factory;
     }
 }

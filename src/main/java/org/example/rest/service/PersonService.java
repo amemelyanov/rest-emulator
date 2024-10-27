@@ -1,5 +1,7 @@
 package org.example.rest.service;
 
+import org.example.rest.model.Person;
+
 import java.util.Map;
 
 /**
@@ -7,11 +9,12 @@ import java.util.Map;
  *
  * @author Alexander Emelyanov
  * @version 1.0
+ * @see org.example.rest.model.Person
  */
 public interface PersonService {
 
     /**
-     * Метод выполняет отправку объекта Person
+     * Метод выполняет отправку объекта Map
      *
      * @param person персона
      */
@@ -22,5 +25,5 @@ public interface PersonService {
      *
      * @param person персона
      */
-    void receive(Map<String, Object> person);
+    void receive(Person person);
 }

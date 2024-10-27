@@ -36,7 +36,7 @@ public class PersonController {
 
     /**
      * Метод обрабатывает входящий POST запрос, отображает входящий JSON объект
-     * в объект Person.
+     * в объект Map.
      *
      * @param person объект персоны
      */

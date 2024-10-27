@@ -2,6 +2,7 @@ package org.example.rest.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.example.rest.model.Person;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.core.KafkaTemplate;
@@ -29,12 +30,12 @@ public class PersonKafkaService implements PersonService {
     private String topic;
 
     /**
-     * Объект для доступа к методам KafkaTemplate<String, Person>
+     * Объект для доступа к методам KafkaTemplate<String, Map>
      */
     private final KafkaTemplate<String, Map<String, Object>> kafkaTemplate;
 
     /**
-     * Метод выполняет отправку объекта Person в топик Kafka
+     * Метод выполняет отправку объекта Map в топик Kafka
      *
      * @param person персона
      */
@@ -63,9 +64,9 @@ public class PersonKafkaService implements PersonService {
      *
      * @param person персона
      */
-    @KafkaListener(topics = "${spring.kafka.topic}", containerFactory = "mapKafkaListenerContainerFactory")
+    @KafkaListener(topics = "${spring.kafka.topic}", containerFactory = "personKafkaListenerContainerFactory")
     @Override
-    public void receive(Map<String, Object> person) {
+    public void receive(Person person) {
         log.info("Вызов метода receive() класса PersonService");
         log.info("Из Kafka получен объект: {}, topic: {}", person, topic);
     }
