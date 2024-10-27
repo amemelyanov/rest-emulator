@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Контроллер для работы с персонами через Rest API
@@ -36,13 +35,13 @@ public class PersonController {
 
     /**
      * Метод обрабатывает входящий POST запрос, отображает входящий JSON объект
-     * в объект Person.
+     * в объект String.
      *
      * @param person объект персоны
      */
     @ResponseStatus(code = HttpStatus.OK)
     @PostMapping
-    public void send(@RequestBody Map<String, Object> person) {
+    public void send(@RequestBody String person) {
         if (person == null) {
             throw new IllegalArgumentException("Person cannot be null");
         }

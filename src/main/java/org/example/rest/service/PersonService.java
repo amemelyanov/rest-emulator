@@ -1,8 +1,6 @@
 package org.example.rest.service;
 
-import org.example.rest.model.Person;
-
-import java.util.Map;
+import com.fasterxml.jackson.core.JsonProcessingException;
 
 /**
  * Сервис по работе с персонами
@@ -14,16 +12,16 @@ import java.util.Map;
 public interface PersonService {
 
     /**
-     * Метод выполняет отправку объекта Person
+     * Метод выполняет отправку объекта String
      *
      * @param person персона
      */
-    void send(Map<String, Object> person);
+    void send(String person);
 
     /**
-     * Метод выполняет получение объекта Person
+     * Метод выполняет получение объекта String
      *
      * @param person персона
      */
-    void receive(Person person);
+    void receive(String person) throws JsonProcessingException;
 }

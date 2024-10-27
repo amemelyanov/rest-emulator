@@ -34,22 +34,22 @@ public class KafkaProducerConfig {
      * @return возвращает объект для доступа к методам Kafka Producer
      */
     @Bean
-    public KafkaTemplate<String, Map<String, Object>> mapKafkaTemplate() {
-        return new KafkaTemplate<>(mapProducerFactory());
+    public KafkaTemplate<String, String> stringKafkaTemplate() {
+        return new KafkaTemplate<>(stringProducerFactory());
     }
 
     /**
      * Метод создает бин фабрики производителей.
      *
-     * @return возвращает фабрику производителей параметризованную Map
+     * @return возвращает фабрику производителей параметризованную String
      */
     @Bean
-    public ProducerFactory<String, Map<String, Object>> mapProducerFactory() {
+    public ProducerFactory<String, String> stringProducerFactory() {
         Map<String, Object> props = new HashMap<>();
         props.put(JsonSerializer.ADD_TYPE_INFO_HEADERS, false);
         props.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
         props.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
-        props.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, JsonSerializer.class);
+        props.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
         return new DefaultKafkaProducerFactory<>(props);
     }
 

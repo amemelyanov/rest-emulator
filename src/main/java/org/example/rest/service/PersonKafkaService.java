@@ -1,5 +1,7 @@
 package org.example.rest.service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.rest.model.Person;
@@ -8,8 +10,8 @@ import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 
-import java.util.LinkedHashMap;
-import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Реализация сервиса по работе с персонами с использованием Kafka
@@ -30,21 +32,26 @@ public class PersonKafkaService implements PersonService {
     private String topic;
 
     /**
-     * Объект для доступа к методам KafkaTemplate<String, Person>
+     * Объект для доступа к методам ObjectMapper
      */
-    private final KafkaTemplate<String, Map<String, Object>> kafkaTemplate;
+    private final ObjectMapper objectMapper;
 
     /**
-     * Метод выполняет отправку объекта Person в топик Kafka
+     * Объект для доступа к методам KafkaTemplate<String, String>
+     */
+    private final KafkaTemplate<String, String> kafkaTemplate;
+
+    /**
+     * Метод выполняет отправку объекта String в топик Kafka
      *
      * @param person персона
      */
     @Override
-    public void send(Map<String, Object> person) {
+    public void send(String person) {
         log.info("Вызов метода send() класса PersonService");
-        Map<String, Object> changedJsonObject = processing(person);
-        kafkaTemplate.send(topic, changedJsonObject);
-        log.info("В Kafka отправлен объект: {}, topic: {}", changedJsonObject, topic);
+        String changedPerson = processing(person);
+        kafkaTemplate.send(topic, changedPerson);
+        log.info("В Kafka отправлен объект: {}, topic: {}", changedPerson, topic);
     }
 
     /**
@@ -53,20 +60,22 @@ public class PersonKafkaService implements PersonService {
      * @param person персона
      * @return person измененный объект
      */
-    private Map<String, Object> processing(Map<String, Object> person) {
-        person.put("age", 96);
-       ((LinkedHashMap<String, Object>) person.get("mother")).put("age", 96);
-        return person;
+    private String processing(String person) {
+        Pattern pattern = Pattern.compile("\"age\": \\d+");
+        Matcher matcher = pattern.matcher(person);
+        return matcher.replaceAll("\"age\": 96");
     }
 
     /**
-     * Метод выполняет получение объекта Person из топика Kafka
+     * Метод выполняет получение объекта String (person) из топика Kafka
+     * и преобразует его в объект Person
      *
      * @param person персона
      */
-    @KafkaListener(topics = "${spring.kafka.topic}", containerFactory = "personKafkaListenerContainerFactory")
+    @KafkaListener(topics = "${spring.kafka.topic}", containerFactory = "stringKafkaListenerContainerFactory")
     @Override
-    public void receive(Person person) {
+    public void receive(String person) throws JsonProcessingException {
+        Person personFromKafka = objectMapper.readValue(person, Person.class);
         log.info("Вызов метода receive() класса PersonService");
         log.info("Из Kafka получен объект: {}, topic: {}", person, topic);
     }
