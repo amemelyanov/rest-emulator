@@ -6,7 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- * Модель данных мама
+ * Модель данных сообщение
  *
  * @author Alexander Emelyanov
  * @version 1.0
@@ -15,15 +15,15 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-public class Mother {
+public class Message {
 
     /**
-     * Имя
+     * Идентификатор
      */
-    private String name;
+    private Long id;
 
     /**
-     * Возраст
+     * Текст сообщения
      */
-    private Integer age;
+    private String text;
 }

@@ -2,7 +2,7 @@ package org.example.rest.config;
 
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.common.serialization.StringDeserializer;
-import org.example.rest.model.Person;
+import org.example.rest.model.Message;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -38,27 +38,27 @@ public class KafkaConsumerConfig {
     /**
      * Метод создает бин фабрики потребителей.
      *
-     * @return возвращает фабрику потребителей параметризованную Person
+     * @return возвращает фабрику потребителей параметризованную Message
      */
     @Bean
-    public ConsumerFactory<String, Person> personConsumerFactory() {
+    public ConsumerFactory<String, Message> messageConsumerFactory() {
         Map<String, Object> props = new HashMap<>();
         props.put(ConsumerConfig.GROUP_ID_CONFIG, consumerGroups);
         props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
         return new DefaultKafkaConsumerFactory<>(props, new StringDeserializer(),
-                new JsonDeserializer<>(Person.class));
+                new JsonDeserializer<>(Message.class));
     }
 
     /**
      * Метод создает бин фабрики контейнеров слушателя Kafka.
      *
-     * @return возвращает фабрику контейнеров слушателя Kafka параметризованную Person
+     * @return возвращает фабрику контейнеров слушателя Kafka параметризованную Message
      */
     @Bean
-    public ConcurrentKafkaListenerContainerFactory<String, Person> personKafkaListenerContainerFactory() {
-        ConcurrentKafkaListenerContainerFactory<String, Person> factory =
+    public ConcurrentKafkaListenerContainerFactory<String, Message> messageKafkaListenerContainerFactory() {
+        ConcurrentKafkaListenerContainerFactory<String, Message> factory =
                 new ConcurrentKafkaListenerContainerFactory<>();
-        factory.setConsumerFactory(personConsumerFactory());
+        factory.setConsumerFactory(messageConsumerFactory());
         return factory;
     }
 }

@@ -4,8 +4,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.example.rest.model.Person;
-import org.example.rest.service.PersonKafkaService;
+import org.example.rest.model.Message;
+import org.example.rest.service.MessageKafkaService;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
@@ -13,22 +13,22 @@ import java.io.IOException;
 import java.util.HashMap;
 
 /**
- * Контроллер для работы с персонами через Rest API
+ * Контроллер для работы с сообщениями через Rest API
  *
  * @author Alexander Emelyanov
  * @version 1.0
- * @see org.example.rest.model.Person
+ * @see org.example.rest.model.Message
  */
 @Slf4j
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/v1/persons")
-public class PersonController {
+@RequestMapping("/api/v1/messages")
+public class MessageController {
 
     /**
-     * Объект для доступа к методам PersonService
+     * Объект для доступа к методам MessageService
      */
-    private final PersonKafkaService personKafkaService;
+    private final MessageKafkaService messageKafkaService;
 
     /**
      * Объект для доступа к методам ObjectMapper
@@ -37,19 +37,19 @@ public class PersonController {
 
     /**
      * Метод обрабатывает входящий POST запрос, отображает входящий JSON объект
-     * в объект Person.
+     * в объект Message.
      *
-     * @param person объект персоны
+     * @param message объект сообщения
      */
     @ResponseStatus(code = HttpStatus.OK)
     @PostMapping
-    public void send(@RequestBody Person person) {
-        if (person == null || person.getMother() == null) {
-            throw new IllegalArgumentException("Person or Person.Mother cannot be null");
+    public void send(@RequestBody Message message) {
+        if (message == null) {
+            throw new IllegalArgumentException("Message cannot be null");
         }
-        log.info("Вызов метода send() класса PersonController");
-        log.info("На endpoint \"/api/v1/persons\" получен объект: {}", person);
-        personKafkaService.send(person);
+        log.info("Вызов метода send() класса MessageController");
+        log.info("На endpoint \"/api/v1/messages\" получен объект: {}", message);
+        messageKafkaService.send(message);
     }
 
     /**

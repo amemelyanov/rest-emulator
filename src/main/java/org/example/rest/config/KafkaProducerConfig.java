@@ -2,7 +2,7 @@ package org.example.rest.config;
 
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.serialization.StringSerializer;
-import org.example.rest.model.Person;
+import org.example.rest.model.Message;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -35,17 +35,17 @@ public class KafkaProducerConfig {
      * @return возвращает объект для доступа к методам Kafka Producer
      */
     @Bean
-    public KafkaTemplate<String, Person> personKafkaTemplate() {
-        return new KafkaTemplate<>(personProducerFactory());
+    public KafkaTemplate<String, Message> messageKafkaTemplate() {
+        return new KafkaTemplate<>(messageProducerFactory());
     }
 
     /**
      * Метод создает бин фабрики производителей.
      *
-     * @return возвращает фабрику производителей параметризованную Person
+     * @return возвращает фабрику производителей параметризованную Message
      */
     @Bean
-    public ProducerFactory<String, Person> personProducerFactory() {
+    public ProducerFactory<String, Message> messageProducerFactory() {
         Map<String, Object> props = new HashMap<>();
         props.put(JsonSerializer.ADD_TYPE_INFO_HEADERS, false);
         props.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
