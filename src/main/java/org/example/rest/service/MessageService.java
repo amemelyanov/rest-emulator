@@ -18,10 +18,4 @@ public interface MessageService {
      */
     void send(Message message);
 
-    /**
-     * Метод выполняет получение объекта Message
-     *
-     * @param message сообщение
-     */
-    void receive(Message message);
 }

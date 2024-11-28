@@ -45,19 +45,6 @@ public class MessageKafkaService implements MessageService {
     }
 
     /**
-     * Метод выполняет получение объекта Message из топика Kafka
-     *
-     * @param message сообщение
-     */
-    @KafkaListener(topics = "${spring.kafka.topic}", containerFactory = "messageKafkaListenerContainerFactory")
-    @Override
-    public void receive(Message message) {
-        log.info("Вызов метода receive() класса MessageService");
-        processingAfterKafka(message);
-        log.info("Из Kafka получен объект: {}, topic: {}", message, topic);
-    }
-
-    /**
      * Метод выполняет обработку Message до отправления в Kafka
      *
      * @param message сообщение

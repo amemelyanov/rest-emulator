@@ -6,9 +6,13 @@ spring:
   profiles:
     active: DEV
   kafka:
-    bootstrap-servers: localhost:9092, localhost:9093
+    bootstrap-servers: localhost:9092
     topic: "messages"
     consumer-group: "messages-group"
+  data:
+    redis:
+      host: localhost
+      port: 6379
 logging:
   level:
     .: INFO

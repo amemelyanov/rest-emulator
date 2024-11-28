@@ -9,7 +9,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  * @author Alexander Emelyanov
  * @version 1.0
  */
-@SpringBootApplication
+@SpringBootApplication(scanBasePackages = "org.example")
 public class RestEmulatorApplication {
 
     /**

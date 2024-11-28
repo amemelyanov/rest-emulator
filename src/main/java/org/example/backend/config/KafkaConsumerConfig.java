@@ -1,8 +1,8 @@
-package org.example.rest.config;
+package org.example.backend.config;
 
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.common.serialization.StringDeserializer;
-import org.example.rest.model.Message;
+import org.example.backend.model.Message;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
