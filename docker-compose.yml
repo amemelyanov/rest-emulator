@@ -53,6 +53,7 @@ services:
     links:
       - kafka
       - zookeeper
+
   redis:
     image: redis:latest
     container_name: redis

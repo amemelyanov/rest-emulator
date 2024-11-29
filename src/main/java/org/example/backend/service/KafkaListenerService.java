@@ -8,23 +8,26 @@ import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
 
 /**
- * Реализация сервиса по работе с сообщениями с использованием Kafka
+ * Сервис слушатель Kafka
  *
  * @author Alexander Emelyanov
  * @version 1.0
- * @see MessageKafkaService
+ * @see MessageRedisService
  */
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class MessageKafkaService implements MessageService {
-
+public class KafkaListenerService {
     /**
      * Наименование топика
      */
     @Value("${spring.kafka.topic}")
     private String topic;
-//    private final MessageRepository messageRepository;
+
+    /**
+     * Объект для доступа к методам MessageService
+     */
+    private final MessageService messageService;
 
     /**
      * Метод выполняет получение объекта Message из топика Kafka
@@ -33,20 +36,18 @@ public class MessageKafkaService implements MessageService {
      */
     @KafkaListener(topics = "${spring.kafka.topic}", containerFactory = "messageKafkaListenerContainerFactory")
     public void receive(Message message) {
-        log.info("Вызов метода receive() класса MessageService");
+        log.info("Вызов метода receive() класса KafkaListenerService");
         processingAfterKafka(message);
         log.info("Из Kafka получен объект: {}, topic: {}", message, topic);
-//        messageRepository.save(message);
+        messageService.save(message);
     }
 
     /**
      * Метод выполняет обработку Message после получения из Kafka
      *
      * @param message сообщение
-     * @return message измененный объект
      */
-    private Message processingAfterKafka(Message message) {
+    private void processingAfterKafka(Message message) {
         message.setText("Это сообщение после получения из Kafka");
-        return message;
     }
 }

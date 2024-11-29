@@ -2,6 +2,8 @@ package org.example.backend.service;
 
 import org.example.backend.model.Message;
 
+import java.util.List;
+
 /**
  * Сервис по работе с сообщениями
  *
@@ -12,9 +14,24 @@ import org.example.backend.model.Message;
 public interface MessageService {
 
     /**
-     * Метод выполняет получение объекта Message
+     * Метод выполняет сохранение объекта Message в Redis
      *
      * @param message сообщение
      */
-    void receive(Message message);
+    Message save(Message message);
+
+    /**
+     * Метод выполняет поиск объекта Message в Redis
+     * по id
+     *
+     * @param id идентификатор сообщения
+     */
+    Message findById(Long id);
+
+    /**
+     * Метод выполняет получение всех объектов Message из Redis
+     *
+     * @return messages список сообщений
+     */
+    List<Message> findAll();
 }

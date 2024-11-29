@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.rest.model.Message;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 
@@ -38,31 +37,19 @@ public class MessageKafkaService implements MessageService {
      */
     @Override
     public void send(Message message) {
-        log.info("Вызов метода send() класса MessageService");
-        Message changedMessage = processingBeforeKafka(message);
-        kafkaTemplate.send(topic, changedMessage);
-        log.info("В Kafka отправлен объект: {}, topic: {}", changedMessage, topic);
+        log.info("Вызов метода send() класса MessageKafkaService");
+        processingBeforeKafka(message);
+        kafkaTemplate.send(topic, message);
+        log.info("В Kafka отправлен объект: {}, topic: {}", message, topic);
     }
 
     /**
      * Метод выполняет обработку Message до отправления в Kafka
      *
      * @param message сообщение
-     * @return message измененный объект
      */
-    private Message processingBeforeKafka(Message message) {
+    private void processingBeforeKafka(Message message) {
         message.setText("Это сообщение до отправки в Kafka");
-        return message;
     }
 
-    /**
-     * Метод выполняет обработку Message после получения из Kafka
-     *
-     * @param message сообщение
-     * @return message измененный объект
-     */
-    private Message processingAfterKafka(Message message) {
-        message.setText("Это сообщение после получения из Kafka");
-        return message;
-    }
 }

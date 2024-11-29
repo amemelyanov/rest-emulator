@@ -13,7 +13,7 @@ import org.springframework.data.redis.core.RedisHash;
  * @author Alexander Emelyanov
  * @version 1.0
  */
-@RedisHash
+@RedisHash("message")
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor

@@ -1,4 +1,4 @@
-package org.example.rest;
+package org.example;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -9,7 +9,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  * @author Alexander Emelyanov
  * @version 1.0
  */
-@SpringBootApplication(scanBasePackages = "org.example")
+@SpringBootApplication()
 public class RestEmulatorApplication {
 
     /**
