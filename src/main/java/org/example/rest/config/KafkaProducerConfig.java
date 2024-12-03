@@ -1,5 +1,6 @@
 package org.example.rest.config;
 
+import org.apache.kafka.clients.admin.NewTopic;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.serialization.StringSerializer;
 import org.example.rest.model.Person;
@@ -30,6 +31,12 @@ public class KafkaProducerConfig {
     private String bootstrapServers;
 
     /**
+     * Наименование топика
+     */
+    @Value("${spring.kafka.topic}")
+    private String topic;
+
+    /**
      * Метод создает бин доступа к методам
      *
      * @return возвращает объект для доступа к методам Kafka Producer
@@ -52,6 +59,16 @@ public class KafkaProducerConfig {
         props.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
         props.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, JsonSerializer.class);
         return new DefaultKafkaProducerFactory<>(props);
+    }
+
+    /**
+     * Метод создает бин топика сообщений.
+     *
+     * @return топик
+     */
+    @Bean
+    public NewTopic topic() {
+        return new NewTopic(topic, 1, (short) 1);
     }
 
 }
